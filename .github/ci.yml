@@ -1,10 +1,12 @@
 name: Noir Main Build
 
 on:
-  pull_request:
-    branches: [main]
   push:
-    branches: [main]
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
   schedule:
     - cron: "0 6 * * 1"
 
