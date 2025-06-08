@@ -1,0 +1,49 @@
+name: Noir Main Build
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 6 * * 1"
+
+jobs:
+  build_and_test:
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-latest]
+        python-version: ["3.10", "3.11"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Python package
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install .
+
+      - name: Build C++
+        run: |
+          chmod +x setup/install_eigen3.4.sh
+          sudo ./setup/install_eigen3.4.sh
+#          cd ContactModelling
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --parallel
+
+#      - name: Run C++ tests
+#        run: |
+#          cd ContactModelling/build
+#          ctest --output-on-failure
+
+      # Uncomment once Python tests are ready
+      # - name: Run Python tests
+      #   run: |
+      #     python3 -m pip install pytest
+      #     python3 -m pytest tests/

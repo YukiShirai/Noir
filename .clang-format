@@ -1,0 +1,11 @@
+BasedOnStyle: Google
+Language: Cpp
+
+DerivePointerAlignment: false
+PointerAlignment: Left
+
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortLambdasOnASingleLine: Empty
+
+IndentWidth: 4
+ColumnLimit: 110

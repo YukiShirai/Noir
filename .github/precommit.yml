@@ -1,0 +1,36 @@
+name: Pre-Commit
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  pre-commit:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - ubuntu-22.04
+        python-version: [ "3.10", "3.11" ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Cache pre-commit hooks
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pre-commit
+          key: ${{ runner.os }}-precommit-${{ hashFiles('.pre-commit-config.yaml') }}
+      - name: Install pre-commit
+        run: python3 -m pip install pre-commit
+      - name: Locally installing
+        run: pre-commit install
+      - name: Run pre-commit
+        run: |
+          pre-commit run --all-files

@@ -1,0 +1,12 @@
+*build*
+.vscode
+.idea
+*.npy
+*.pyc
+.cache
+*egg-info
+.ruff_cache
+*.npz
+*.png
+*.jpg
+*.mp4
