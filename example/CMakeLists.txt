@@ -9,6 +9,7 @@ foreach(EXAMPLE ${EXAMPLES})
 
     target_link_libraries(${EXAMPLE_NAME} PRIVATE
             Eigen3::Eigen
+            noir::noir
     )
 
 
