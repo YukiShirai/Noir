@@ -38,10 +38,10 @@ jobs:
           cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
           cmake --build build --parallel
 
-#      - name: Run C++ tests
-#        run: |
-#          cd ContactModelling/build
-#          ctest --output-on-failure
+      - name: Run C++ tests
+        run: |
+          cd build/test
+          ctest --output-on-failure
 
       # Uncomment once Python tests are ready
       # - name: Run Python tests
