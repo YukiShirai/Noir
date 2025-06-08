@@ -35,7 +35,6 @@ jobs:
         run: |
           chmod +x setup/install_eigen3.4.sh
           sudo ./setup/install_eigen3.4.sh
-#          cd ContactModelling
           cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
           cmake --build build --parallel
 
