@@ -1,5 +1,6 @@
-#include <Eigen/Dense>
 #include <iostream>
+
+#include "robot_joint.h"
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -13,5 +14,7 @@ int main() {
     v << 1, 2, 3;
     std::cout << "m * v =" << std::endl << m * v << std::endl;
 
+    noir::RevoluteJoint joint = noir::RevoluteJoint(Eigen::Vector3d::Zero(), Eigen::Vector3d::Zero());
+    std::cout << joint << std::endl;
     return 0;
 }
