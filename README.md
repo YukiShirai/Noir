@@ -25,19 +25,25 @@ This is an example of how you may get started working on this repository.
 1. Create virtualenvironment. It can be either using conda or venv.
 2. Run the following command in the root directory of this project:
 
-sh
+```
 python3 -m pip install .
-
-
+```
+3. Then, download eigen and build Noir using cmake:
+```
+chmod +x setup/install_eigen3.4.sh
+sudo ./setup/install_eigen3.4.sh
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build --parallel
+```
 
 
 <!-- Pre-commit -->
 ## Pre-commit
 We use [pre-commit](https://pre-commit.com/) to run simple checks such as auto-formattting and linting. Follow the instructions in the hyperlink to setup pre-commit  on laptop.
 
-sh
+```
 pre-commit install
-
+```
 In this way, pre-commit is called everytime you do git commit.
 
 ## Code Style
