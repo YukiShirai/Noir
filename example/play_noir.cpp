@@ -14,7 +14,8 @@ int main() {
     v << 1, 2, 3;
     std::cout << "m * v =" << std::endl << m * v << std::endl;
 
-    noir::RevoluteJoint joint = noir::RevoluteJoint(Eigen::Vector3d::Zero(), Eigen::Vector3d::Zero());
+    noir::RevoluteJoint joint =
+        noir::RevoluteJoint("rev_joint", 0, Eigen::Vector3d::Zero(), Eigen::Vector3d::Zero());
     std::cout << joint << std::endl;
     return 0;
 }

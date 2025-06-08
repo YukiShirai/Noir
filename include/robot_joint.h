@@ -5,9 +5,13 @@
 #include <Eigen/Dense>
 
 namespace noir {
-
 class Joint {
+   protected:
+    std::string m_name;
+    int m_index{};
+
    public:
+    Joint(std::string_view name, int index) : m_name(name), m_index(index) {}
     virtual ~Joint() = default;
     virtual Eigen::Matrix4d getTransform(double q) const = 0;
     virtual std::ostream& print(std::ostream& out) const = 0;
@@ -20,10 +24,25 @@ class RevoluteJoint : public Joint {
     Eigen::Vector3d m_offset;
 
    public:
-    RevoluteJoint(const Eigen::Vector3d& axis, const Eigen::Vector3d& offset)
-        : m_axis(axis.normalized()), m_offset(offset) {}
+    RevoluteJoint(std::string_view name, int index, const Eigen::Vector3d& axis,
+                  const Eigen::Vector3d& offset)
+        : Joint(name, index), m_axis(axis.normalized()), m_offset(offset) {}
     Eigen::Matrix4d getTransform(double q) const override;
 
+    std::ostream& print(std::ostream& out) const override;
+};
+
+class PrismaticJoint : public Joint {
+   private:
+    Eigen::Vector3d m_axis;
+    Eigen::Vector3d m_offset;
+
+   public:
+    PrismaticJoint(std::string_view name, int index, const Eigen::Vector3d& axis,
+                   const Eigen::Vector3d& offset)
+        : Joint(name, index), m_axis(axis.normalized()), m_offset(offset) {}
+
+    Eigen::Matrix4d getTransform(double q) const override;
     std::ostream& print(std::ostream& out) const override;
 };
 
