@@ -67,6 +67,7 @@ jobs:
           gcovr -r . --xml -o coverage.xml
           gcovr -r . --html-details -o coverage.html --print-summary
       - name: Upload coverage reports to Codecov
+        if: matrix.os == 'ubuntu-22.04'
         uses: codecov/codecov-action@v5
         with:
           files: coverage.xml
