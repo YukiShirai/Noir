@@ -17,6 +17,9 @@ jobs:
         os: [ubuntu-22.04, ubuntu-latest]
         python-version: ["3.10", "3.11"]
         compiler: [ gcc-11, clang-14 ]
+        exclude:
+          - os: ubuntu-latest
+            compiler: clang-14
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout

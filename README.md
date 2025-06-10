@@ -11,10 +11,9 @@ Implementation in C++ for Numerical Optimization in Robotics. This repo is still
 This is an example of how you may get started working on this repository.
 
 ### Prerequisites
-
+* gcc-11 or clang-14
 * Python 3.10, 3.11
 * pip3
-* macOS >= 14.3.1
 * Ubuntu >= 22.04
 * Eigen3.4
 
