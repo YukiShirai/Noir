@@ -6,8 +6,7 @@ file(GLOB_RECURSE TESTS RELATIVE ${TESTS_DIR} "${TESTS_DIR}/*.cpp")
 include(FetchContent)
 FetchContent_Declare(
         googletest
-        URL https://github.com/google/googletest/archive/refs/tags/v1.15.2.zip
-        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+        URL https://github.com/google/googletest/archive/refs/tags/v1.17.0.zip
 )
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
@@ -26,17 +25,5 @@ foreach(TEST ${TESTS})
     )
     include(GoogleTest)
     gtest_discover_tests(${TEST_NAME})
-
-
-
-#    # Common settings for both types
-#    target_include_directories(${TEST_NAME} PRIVATE
-#            ${CMAKE_SOURCE_DIR}/include
-#    )
-#
-#    target_compile_options(${TEST_NAME} PRIVATE
-#            $<$<CONFIG:Debug>:-g -O0>
-#            $<$<CONFIG:Release>:-O3>
-#    )
 
 endforeach()

@@ -21,7 +21,7 @@ class Joint {
     friend std::ostream& operator<<(std::ostream& out, const Joint& joint) { return joint.print(out); }
 
     // getter
-    std::string getName() const { return m_name; }
+    const std::string& getName() const { return m_name; }
     int getIndex() const { return m_index; }
     double getPosition() const { return m_position; }
     double getVelocity() const { return m_velocity; }
@@ -54,6 +54,15 @@ class PrismaticJoint : public Joint {
 
     Eigen::Matrix4d getTransform(double q) const override;
     std::ostream& print(std::ostream& out) const override;
+};
+
+// data container for joint class
+struct JointSpec {
+    std::string type;
+    std::string name;
+    int index;
+    Eigen::Vector3d axis;
+    Eigen::Vector3d offset;
 };
 
 // Factory for Joint to centralize the creation using single class
