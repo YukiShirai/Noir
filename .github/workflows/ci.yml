@@ -63,6 +63,7 @@ jobs:
           cd build/test
           ctest --output-on-failure
       - name: Generate coverage report
+        if: matrix.os == 'ubuntu-22.04'
         run: |
           gcovr -r . --xml -o coverage.xml
           gcovr -r . --html-details -o coverage.html --print-summary
