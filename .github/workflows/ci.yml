@@ -16,6 +16,10 @@ jobs:
       matrix:
         os: [ubuntu-22.04, ubuntu-latest]
         python-version: ["3.10", "3.11"]
+        compiler: [ gcc-11, clang-14 ]
+        exclude:
+          - os: ubuntu-latest
+            compiler: clang-14
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
@@ -30,18 +34,47 @@ jobs:
         run: |
           python3 -m pip install --upgrade pip
           python3 -m pip install .
+      - name: Set up ${{ matrix.compiler }}
+        run: |
+          if [[ "${{ matrix.compiler }}" == "gcc-11" ]]; then
+            sudo apt-get update
+            sudo apt-get install -y gcc-11 g++-11
+            export CC=gcc-11
+            export CXX=g++-11
+          elif [[ "${{ matrix.compiler }}" == "clang-14" ]]; then
+            sudo apt-get update
+            sudo apt-get install -y clang-14
+            export CC=clang-14
+            export CXX=clang++-14
+          fi
+          echo "CC=$CC" >> $GITHUB_ENV
+          echo "CXX=$CXX" >> $GITHUB_ENV
 
       - name: Build C++
         run: |
           chmod +x setup/install_eigen3.4.sh
           sudo ./setup/install_eigen3.4.sh
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+          sudo apt-get install -y gcovr lcov
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON
           cmake --build build --parallel
 
       - name: Run C++ tests
         run: |
           cd build/test
           ctest --output-on-failure
+      - name: Generate coverage report
+        if: matrix.os == 'ubuntu-22.04'
+        run: |
+          gcovr -r . --xml -o coverage.xml
+          gcovr -r . --html-details -o coverage.html --print-summary
+      - name: Upload coverage reports to Codecov
+        if: matrix.os == 'ubuntu-22.04'
+        uses: codecov/codecov-action@v5
+        with:
+          files: coverage.xml
+          token: ${{ secrets.CODECOV_TOKEN }}  # Optional for public repos
+
+
 
       # Uncomment once Python tests are ready
       # - name: Run Python tests

@@ -1,6 +1,19 @@
 cmake_minimum_required(VERSION 3.22)
 project(noir VERSION 1.0 DESCRIPTION "Implementation for Numerical Optimization for Robotics in C++")
 
+option(ENABLE_COVERAGE "Enable coverage reporting" OFF)
+if(ENABLE_COVERAGE)
+    message(STATUS "Coverage enabled")
+    set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -DDEBUG --coverage")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
+else()
+    # Keep your original flags
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0 -DDEBUG")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -DNDEBUG")
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -O2 -g")
+endif()
+
+
 set(PROJECT NOIR)
 set(LIBRARY noir)
 
@@ -47,9 +60,7 @@ add_subdirectory(src)
 add_subdirectory(example)
 add_subdirectory(test)
 
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0 -DDEBUG")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -DNDEBUG")
-set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -O2 -g")
+
 
 
 

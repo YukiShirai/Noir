@@ -35,3 +35,16 @@ std::ostream& PrismaticJoint::print(std::ostream& out) const {
     out << "  Offset: " << m_offset.transpose() << "\n";
     return out;
 }
+
+std::shared_ptr<Joint> noir::JointFactory::createJoint(std::string_view type, std::string_view name,
+                                                       int index, const Eigen::Vector3d& axis,
+                                                       const Eigen::Vector3d& offset) {
+    // C++ does not support switch for std::string
+    if (type == "revolute") {
+        return std::make_shared<RevoluteJoint>(name, index, axis, offset);
+    } else if (type == "prismatic") {
+        return std::make_shared<RevoluteJoint>(name, index, axis, offset);
+    } else {
+        throw std::invalid_argument("JointFactory::createJoint - unknown joint type");
+    }
+}

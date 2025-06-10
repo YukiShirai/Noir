@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "robot.h"
 #include "robot_joint.h"
 
 using Eigen::MatrixXd;
@@ -17,5 +18,10 @@ int main() {
     noir::RevoluteJoint joint =
         noir::RevoluteJoint("rev_joint", 0, Eigen::Vector3d::Zero(), Eigen::Vector3d::Zero());
     std::cout << joint << std::endl;
+
+    noir::SingleArm robot("one_arm");
+    robot.initialize();
+    robot.sendCommands();
+
     return 0;
 }
