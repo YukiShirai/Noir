@@ -1,4 +1,5 @@
 [![Build & Test](https://github.com/YukiShirai/Noir/actions/workflows/ci.yml/badge.svg)](https://github.com/YukiShirai/Noir/actions)
+[![codecov](https://codecov.io/gh/YukiShirai/Noir/branch/main/graph/badge.svg)](https://codecov.io/gh/YukiShirai/Noir)
 
 
 # Noir
