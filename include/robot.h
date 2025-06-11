@@ -29,6 +29,22 @@ class SingleArm : public Robot {
     void initialize() override;
     void sendCommands() override;
 };
+
+class TwoArm : public Robot {
+   private:
+    std::unique_ptr<SingleArm> m_left_arm;
+    std::unique_ptr<SingleArm> m_right_arm;
+
+   public:
+    TwoArm(std::string_view name, std::string_view left_arm_name = "left_arm",
+           std::string_view right_arm_name = "right_arm");
+    void initialize() override;
+    void sendCommands() override;
+
+    SingleArm* getLeftArm() { return m_left_arm.get(); }
+    SingleArm* getRightArm() { return m_right_arm.get(); }
+};
+
 }  // namespace noir
 
 #endif  // ROBOT_H
