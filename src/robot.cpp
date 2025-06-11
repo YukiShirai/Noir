@@ -23,3 +23,23 @@ void SingleArm::sendCommands() {
         std::cout << "Sending command to joint: " << *joint << std::endl;
     }
 }
+
+TwoArm::TwoArm(std::string_view name, std::string_view left_arm_name, std::string_view right_arm_name)
+    : Robot(name) {
+    m_left_arm = std::make_unique<SingleArm>(left_arm_name);
+    m_right_arm = std::make_unique<SingleArm>(right_arm_name);
+}
+
+void TwoArm::initialize() {
+    m_left_arm->initialize();
+    m_right_arm->initialize();
+
+    m_joints.clear();
+    m_joints.insert(m_joints.end(), m_left_arm->getJoints().begin(), m_left_arm->getJoints().end());
+    m_joints.insert(m_joints.end(), m_right_arm->getJoints().begin(), m_right_arm->getJoints().end());
+}
+
+void TwoArm::sendCommands() {
+    m_left_arm->sendCommands();
+    m_right_arm->sendCommands();
+}
