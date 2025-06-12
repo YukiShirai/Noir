@@ -23,5 +23,11 @@ int main() {
     robot.initialize();
     robot.sendCommands();
 
+    std::vector<double> angles = {M_PI / 4, -M_PI / 2};
+
+    // Compute FK
+    Eigen::Matrix4d T_EE = robot.getEndEffectorTransform(angles);
+    std::cout << "End-effector pose:\n" << T_EE << std::endl;
+
     return 0;
 }
