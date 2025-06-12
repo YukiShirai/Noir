@@ -35,6 +35,43 @@ TEST(RobotTest, ComputeControlAndSendCommandsViaBase) {
     EXPECT_NE(output.find("Sending command to joint"), std::string::npos);
 }
 
+TEST(RobotTest, FK) {
+    SingleArm arm("test_arm");
+    arm.initialize();
+
+    std::vector<double> q_zero{0, 0};
+    auto T_zero = arm.getEndEffectorTransform(q_zero);
+
+    // First joint offset: (0, 0, 0), second: (0, 0, 1)
+    // So with zero angles, expect translation (0, 0, 1)
+    Eigen::Matrix4d expected = Eigen::Matrix4d::Identity();
+    expected(2, 3) = 1.0;
+
+    EXPECT_TRUE(T_zero.isApprox(expected, 1e-9));
+
+    // then cosider non-zero angle
+    std::vector<double> q = {M_PI / 2, 0.0};
+    Eigen::Matrix4d T = arm.getEndEffectorTransform(q);
+    EXPECT_NEAR(T(0, 3), 0.0, 1e-9);
+    EXPECT_NEAR(T(1, 3), 0.0, 1e-9);
+    EXPECT_NEAR(T(2, 3), 1.0, 1e-9);  // end-effector still 1m above
+
+    Eigen::Matrix3d R_actual = T.block<3, 3>(0, 0);
+    Eigen::Matrix3d R_expected;
+    R_expected << 0, -1, 0, 1, 0, 0, 0, 0, 1;
+
+    EXPECT_TRUE(R_actual.isApprox(R_expected, 1e-9));
+}
+
+TEST(RobotTest, FKThrowsOnWrongSize) {
+    SingleArm arm("test_arm");
+    arm.initialize();
+
+    std::vector<double> wrong_size = {0.0};  // only 1 angle for 2 joints
+
+    EXPECT_THROW(arm.getEndEffectorTransform(wrong_size), std::runtime_error);
+}
+
 TEST(TwoRobotTest, InitialTestRobot) {
     std::shared_ptr<Robot> robot = std::make_shared<TwoArm>("bimanual");
 
@@ -83,4 +120,60 @@ TEST(TwoRobotTest, AccessorReturnSameInstances) {
     SingleArm* right_ptr_1 = robot.getRightArm();
     SingleArm* right_ptr_2 = robot.getRightArm();
     EXPECT_EQ(right_ptr_1, right_ptr_2);
+}
+
+TEST(TwoArmTest, FKLeftArmZeroConfig) {
+    TwoArm robot("bimanual");
+    robot.initialize();
+
+    std::vector<double> q = {0.0, 0.0};
+
+    Eigen::Matrix4d T = robot.getEndEffectorTransform(q, TwoArm::ArmSide::LEFT);
+
+    // Only second joint has offset (0, 0, 1), so total translation is (0, 0, 1)
+    Eigen::Matrix4d expected = Eigen::Matrix4d::Identity();
+    expected(2, 3) = 1.0;
+
+    EXPECT_TRUE(T.isApprox(expected, 1e-9));
+}
+
+TEST(TwoArmTest, FKRightArmWithRotation) {
+    TwoArm robot("bimanual");
+    robot.initialize();
+
+    std::vector<double> q = {M_PI / 2, 0.0};
+
+    Eigen::Matrix4d T = robot.getEndEffectorTransform(q, TwoArm::ArmSide::RIGHT);
+
+    // Translation should still be (0, 0, 1)
+    EXPECT_NEAR(T(0, 3), 0.0, 1e-9);
+    EXPECT_NEAR(T(1, 3), 0.0, 1e-9);
+    EXPECT_NEAR(T(2, 3), 1.0, 1e-9);
+
+    // Rotation should be 90 degrees about Z
+    Eigen::Matrix3d R_expected;
+    R_expected << 0, -1, 0, 1, 0, 0, 0, 0, 1;
+    Eigen::Matrix3d R_actual = T.block<3, 3>(0, 0);
+    EXPECT_TRUE(R_actual.isApprox(R_expected, 1e-9));
+}
+
+TEST(TwoArmTest, FKThrowsOnWrongJointSize) {
+    TwoArm robot("bimanual");
+    robot.initialize();
+
+    std::vector<double> q_bad = {0.0};  // too short
+
+    EXPECT_THROW(robot.getEndEffectorTransform(q_bad, TwoArm::ArmSide::LEFT), std::runtime_error);
+    EXPECT_THROW(robot.getEndEffectorTransform(q_bad, TwoArm::ArmSide::RIGHT), std::runtime_error);
+}
+
+TEST(TwoArmTest, FKThrowsOnInvalidArmSide) {
+    TwoArm robot("bimanual");
+    robot.initialize();
+
+    std::vector<double> q = {0.0, 0.0};
+
+    // Use static_cast to simulate bad enum
+    TwoArm::ArmSide invalid_side = static_cast<TwoArm::ArmSide>(-1);
+    EXPECT_THROW(robot.getEndEffectorTransform(q, invalid_side), std::invalid_argument);
 }

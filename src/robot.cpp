@@ -24,6 +24,18 @@ void SingleArm::sendCommands() {
     }
 }
 
+Eigen::Matrix4d SingleArm::getEndEffectorTransform(const std::vector<double>& joint_angles) const {
+    // assert if length of joint_angles is not equal to num of joints
+    if (joint_angles.size() != m_joints.size()) {
+        throw std::runtime_error("SingleArm::getEndEffectorTransform: joint size does NOT match");
+    }
+    Eigen::Matrix4d T = Eigen::Matrix4d::Identity();
+    for (size_t i = 0; i < m_joints.size(); i++) {
+        T = T * m_joints[i]->getTransform(joint_angles[i]);
+    }
+    return T;
+}
+
 TwoArm::TwoArm(std::string_view name, std::string_view left_arm_name, std::string_view right_arm_name)
     : Robot(name) {
     m_left_arm = std::make_unique<SingleArm>(left_arm_name);
@@ -42,4 +54,16 @@ void TwoArm::initialize() {
 void TwoArm::sendCommands() {
     m_left_arm->sendCommands();
     m_right_arm->sendCommands();
+}
+
+Eigen::Matrix4d TwoArm::getEndEffectorTransform(const std::vector<double>& joint_angles,
+                                                const ArmSide& arm_side) const {
+    switch (arm_side) {
+        case ArmSide::LEFT:
+            return m_left_arm->getEndEffectorTransform(joint_angles);
+        case ArmSide::RIGHT:
+            return m_right_arm->getEndEffectorTransform(joint_angles);
+        default:
+            throw std::invalid_argument("TwoArm::getEndEffectorTransform: Unknown arm option");
+    }
 }

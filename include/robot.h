@@ -28,6 +28,8 @@ class SingleArm : public Robot {
 
     void initialize() override;
     void sendCommands() override;
+
+    virtual Eigen::Matrix4d getEndEffectorTransform(const std::vector<double>& joint_angles) const;
 };
 
 class TwoArm : public Robot {
@@ -40,6 +42,10 @@ class TwoArm : public Robot {
            std::string_view right_arm_name = "right_arm");
     void initialize() override;
     void sendCommands() override;
+    enum class ArmSide { LEFT, RIGHT };
+
+    virtual Eigen::Matrix4d getEndEffectorTransform(const std::vector<double>& joint_angles,
+                                                    const ArmSide& arm_side) const;
 
     SingleArm* getLeftArm() { return m_left_arm.get(); }
     SingleArm* getRightArm() { return m_right_arm.get(); }
