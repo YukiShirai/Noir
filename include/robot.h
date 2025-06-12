@@ -2,6 +2,7 @@
 #define ROBOT_H
 
 #include "robot_joint.h"
+#include "sensor.h"
 
 namespace noir {
 
@@ -9,7 +10,8 @@ class Robot {
    protected:
     std::string m_name;
     std::vector<std::shared_ptr<Joint>> m_joints;
-    // TODO: introduce sensor and controller later
+    std::vector<std::shared_ptr<Sensor>> m_sensors;
+    // TODO: introduce controller later
    public:
     explicit Robot(std::string_view name) : m_name(name) {}
     virtual ~Robot() = default;
@@ -17,9 +19,14 @@ class Robot {
     virtual void initialize() = 0;
     virtual void sendCommands() = 0;
 
+    // sensor
+    void addSensor(std::shared_ptr<Sensor> sensor);
+    std::shared_ptr<Sensor> getSensorByName(std::string_view sensor_name) const;
+
     // getter
     const std::string& getName() const { return m_name; }
     const std::vector<std::shared_ptr<Joint>>& getJoints() const { return m_joints; }
+    const std::vector<std::shared_ptr<Sensor>>& getSensors() const { return m_sensors; }
 };
 
 class SingleArm : public Robot {

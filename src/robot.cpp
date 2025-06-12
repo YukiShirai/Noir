@@ -4,6 +4,19 @@
 
 using namespace noir;
 
+void Robot::addSensor(std::shared_ptr<Sensor> sensor) {
+    m_sensors.push_back(std::move(sensor));
+}
+
+std::shared_ptr<Sensor> Robot::getSensorByName(std::string_view sensor_name) const {
+    for (const auto& sensor : m_sensors) {
+        if (sensor->getName() == sensor_name) {
+            return sensor;
+        }
+    }
+    throw std::invalid_argument("Robot::getSensorByName: Sensor NOT found");
+}
+
 void SingleArm::initialize() {
     // TODO: get from yaml file
     std::vector<JointSpec> joint_specs = {

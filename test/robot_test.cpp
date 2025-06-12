@@ -177,3 +177,34 @@ TEST(TwoArmTest, FKThrowsOnInvalidArmSide) {
     TwoArm::ArmSide invalid_side = static_cast<TwoArm::ArmSide>(-1);
     EXPECT_THROW(robot.getEndEffectorTransform(q, invalid_side), std::invalid_argument);
 }
+
+class RobotSensorTest : public ::testing::Test {
+   protected:
+    SingleArm robot{"teet_arm"};
+
+    void SetUp() override {
+        robot.initialize();
+        robot.addSensor(std::make_shared<ForceSensor>("ft"));
+        robot.addSensor(std::make_shared<VisionSensor>("arm_camera"));
+    };
+};
+
+TEST_F(RobotSensorTest, SensorReadAndMeasurementByName) {
+    auto fs = robot.getSensorByName("ft");
+    fs->read();
+    SensorData fdata = fs->getMeasurement();
+    EXPECT_TRUE(std::holds_alternative<Eigen::Vector3d>(fdata));
+    Eigen::Vector3d f = std::get<Eigen::Vector3d>(fdata);
+    EXPECT_EQ(f.size(), 3);
+
+    auto cam = robot.getSensorByName("arm_camera");
+    cam->read();
+    SensorData cdata = cam->getMeasurement();
+    EXPECT_TRUE(std::holds_alternative<int>(cdata));
+    int frame = std::get<int>(cdata);
+    EXPECT_GE(frame, 0);
+}
+
+TEST_F(RobotSensorTest, GetNonExistentSensorThrows) {
+    EXPECT_THROW(robot.getSensorByName("nonexistent_sensor"), std::invalid_argument);
+}
