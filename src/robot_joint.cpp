@@ -43,7 +43,7 @@ std::shared_ptr<Joint> noir::JointFactory::createJoint(std::string_view type, st
     if (type == "revolute") {
         return std::make_shared<RevoluteJoint>(name, index, axis, offset);
     } else if (type == "prismatic") {
-        return std::make_shared<RevoluteJoint>(name, index, axis, offset);
+        return std::make_shared<PrismaticJoint>(name, index, axis, offset);
     } else {
         throw std::invalid_argument("JointFactory::createJoint - unknown joint type");
     }

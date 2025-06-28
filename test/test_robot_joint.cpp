@@ -97,14 +97,26 @@ TEST(JointInterfaceTest, AxisNormalization) {
 }
 
 TEST(JointInterfaceTest, PrintOperatorMethod) {
-    RevoluteJoint joint("rev_joint56", 121, Eigen::Vector3d(0, 0, 1), Eigen::Vector3d(1, 2, 3));
+    {
+        RevoluteJoint joint("rev_joint56", 121, Eigen::Vector3d(0, 0, 1), Eigen::Vector3d(1, 2, 3));
 
-    std::ostringstream oss;
-    oss << joint;
+        std::ostringstream oss;
+        oss << joint;
 
-    std::string output = oss.str();
-    EXPECT_NE(output.find("rev_joint56"), std::string::npos);
-    EXPECT_NE(output.find("121"), std::string::npos);
+        std::string output = oss.str();
+        EXPECT_NE(output.find("rev_joint56"), std::string::npos);
+        EXPECT_NE(output.find("121"), std::string::npos);
+    }
+    {
+        PrismaticJoint joint("rev_joint56", 121, Eigen::Vector3d(0, 0, 1), Eigen::Vector3d(1, 2, 3));
+
+        std::ostringstream oss;
+        oss << joint;
+
+        std::string output = oss.str();
+        EXPECT_NE(output.find("rev_joint56"), std::string::npos);
+        EXPECT_NE(output.find("121"), std::string::npos);
+    }
 }
 
 TEST(JointInterfaceTest, NameAndIndexAccessors) {
