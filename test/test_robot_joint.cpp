@@ -1,6 +1,6 @@
-#include "robot_joint.h"
-
 #include <gtest/gtest.h>
+
+#include "robot_joint.h"
 
 using namespace noir;
 
