@@ -1,8 +1,8 @@
-#include "robot.h"
-
 #include <gtest/gtest.h>
 
 #include <memory>
+
+#include "robot.h"
 
 using namespace noir;
 
