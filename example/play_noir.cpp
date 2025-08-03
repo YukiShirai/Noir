@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "object_2d.h"
 #include "robot.h"
 #include "robot_joint.h"
 
@@ -28,6 +29,10 @@ int main() {
     // Compute FK
     Eigen::Matrix4d T_EE = robot.getEndEffectorTransform(angles);
     std::cout << "End-effector pose:\n" << T_EE << std::endl;
+
+    // object 2d
+    std::unique_ptr<noir::Object2D> box = std::make_unique<noir::BoxObject2d>("box_play", 2, 0.4, 0.55);
+    std::cout << *box << std::endl;
 
     return 0;
 }
